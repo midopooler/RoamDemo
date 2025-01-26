@@ -31,17 +31,30 @@ public class AngledPathManager : MonoBehaviour
 
     void CalculateCornerPositions()
     {
+        float minZ = 30f;  // Minimum height for turns
+        float maxZ = 75f;  // Maximum height for turns
+        float minX = startPosition.x + 30f;  // Minimum X for first turn
+        float maxX = endPosition.x - 30f;    // Maximum X for last turn
+
         if (numberOfTurns == 1)
         {
-            // Single turn: Place P1 directly above start point
-            cornerPosition1 = new Vector3(startPosition.x, 5f, 75f);
+            // Randomly choose left or right turn
+            bool turnLeft = Random.value > 0.5f;
+            float turnX = turnLeft ? minX : maxX;
+            float randomZ = Random.Range(minZ, maxZ);
+            cornerPosition1 = new Vector3(turnX, 5f, randomZ);
         }
         else // numberOfTurns == 2
         {
-            // First turn: Up from start point
-            cornerPosition1 = new Vector3(startPosition.x, 5f, 75f);
-            // Second turn: Above end point
-            cornerPosition2 = new Vector3(endPosition.x, 5f, 75f);
+            // First turn
+            float firstTurnX = Random.Range(minX, maxX - 30f); // Leave space for second turn
+            float firstTurnZ = Random.Range(minZ, maxZ);
+            cornerPosition1 = new Vector3(firstTurnX, 5f, firstTurnZ);
+
+            // Second turn
+            float secondTurnX = Random.Range(firstTurnX + 30f, maxX);
+            float secondTurnZ = Random.Range(minZ, maxZ);
+            cornerPosition2 = new Vector3(secondTurnX, 5f, secondTurnZ);
         }
     }
 
@@ -65,15 +78,37 @@ public class AngledPathManager : MonoBehaviour
         if (numberOfTurns == 1)
         {
             // Generate path with one turn
-            GenerateVerticalSegment(startPosition, cornerPosition1, true);  // Go up
-            GenerateHorizontalSegment(cornerPosition1, endPosition);        // Go right
+            GenerateVerticalSegment(startPosition, new Vector3(startPosition.x, 5f, cornerPosition1.z), true);
+            GenerateHorizontalSegment(new Vector3(startPosition.x, 5f, cornerPosition1.z), 
+                                    new Vector3(cornerPosition1.x, 5f, cornerPosition1.z));
+            GenerateVerticalSegment(new Vector3(cornerPosition1.x, 5f, cornerPosition1.z), 
+                                    new Vector3(cornerPosition1.x, 5f, endPosition.z), false);
+            GenerateHorizontalSegment(new Vector3(cornerPosition1.x, 5f, endPosition.z), endPosition);
         }
         else // numberOfTurns == 2
         {
-            // Generate path with two turns
-            GenerateVerticalSegment(startPosition, cornerPosition1, true);   // Go up
-            GenerateHorizontalSegment(cornerPosition1, cornerPosition2);     // Go right
-            GenerateVerticalSegment(cornerPosition2, endPosition, false);    // Go down
+            // First vertical segment
+            GenerateVerticalSegment(startPosition, new Vector3(startPosition.x, 5f, cornerPosition1.z), true);
+            
+            // First horizontal segment
+            GenerateHorizontalSegment(new Vector3(startPosition.x, 5f, cornerPosition1.z), 
+                                    new Vector3(cornerPosition1.x, 5f, cornerPosition1.z));
+            
+            // Middle vertical segment
+            bool goingUp = cornerPosition2.z > cornerPosition1.z;
+            GenerateVerticalSegment(new Vector3(cornerPosition1.x, 5f, cornerPosition1.z),
+                                  new Vector3(cornerPosition1.x, 5f, cornerPosition2.z), goingUp);
+            
+            // Second horizontal segment
+            GenerateHorizontalSegment(new Vector3(cornerPosition1.x, 5f, cornerPosition2.z),
+                                    new Vector3(cornerPosition2.x, 5f, cornerPosition2.z));
+            
+            // Final vertical segment
+            GenerateVerticalSegment(new Vector3(cornerPosition2.x, 5f, cornerPosition2.z),
+                                  new Vector3(cornerPosition2.x, 5f, endPosition.z), false);
+            
+            // Final horizontal segment to end
+            GenerateHorizontalSegment(new Vector3(cornerPosition2.x, 5f, endPosition.z), endPosition);
         }
     }
 
