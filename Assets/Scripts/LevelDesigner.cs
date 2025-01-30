@@ -32,6 +32,7 @@ public class LevelDesigner : MonoBehaviour
     private bool isCuboidSelected = true;
     private Camera mainCamera;
     private bool isPlacingObject = false;
+    private bool isDeleteMode = false;
 
     private void Start()
     {
@@ -64,7 +65,30 @@ public class LevelDesigner : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.gameObject.CompareTag("Ground"))
+                if (isDeleteMode)
+                {
+                    // Check if we hit a placed object
+                    if (placedObjects.Contains(hit.collider.gameObject))
+                    {
+                        DeleteObject(hit.collider.gameObject);
+                        isDeleteMode = false; // Turn off delete mode after successful deletion
+                        UpdateButtonColors();
+                        return;
+                    }
+                    // Check if we hit a knot
+                    Vector3 hitPoint = hit.point;
+                    for (int i = 0; i < splineContainer.Spline.Count; i++)
+                    {
+                        if (Vector3.Distance(hitPoint, splineContainer.Spline[i].Position) < 1f)
+                        {
+                            DeleteKnot(i);
+                            isDeleteMode = false; // Turn off delete mode after successful deletion
+                            UpdateButtonColors();
+                            return;
+                        }
+                    }
+                }
+                else if (hit.collider.gameObject.CompareTag("Ground"))
                 {
                     if (isAddingKnot)
                     {
@@ -316,6 +340,10 @@ public class LevelDesigner : MonoBehaviour
                 case "RedoButton":
                     button.onClick.AddListener(Redo);
                     break;
+
+                case "DeleteButton":
+                    button.onClick.AddListener(ToggleDeleteMode);
+                    break;
             }
         }
     }
@@ -337,8 +365,46 @@ public class LevelDesigner : MonoBehaviour
                 case "Place ObjectButton":
                     colors.normalColor = isPlacingObject ? Color.green : Color.white;
                     break;
+                case "DeleteButton":
+                    colors.normalColor = isDeleteMode ? Color.red : Color.white;
+                    break;
             }
             button.colors = colors;
+        }
+    }
+
+    public void ToggleDeleteMode()
+    {
+        isDeleteMode = !isDeleteMode;
+        Debug.Log($"Delete mode: {isDeleteMode}");
+        UpdateButtonColors(); // Update the delete button color to show active state
+    }
+
+    private void DeleteObject(GameObject obj)
+    {
+        placedObjects.Remove(obj);
+        Destroy(obj);
+        RecordAction(new DeleteObjectAction(obj));
+        Debug.Log("Object deleted");
+    }
+
+    private void DeleteKnot(int index)
+    {
+        if (splineContainer.Spline.Count <= 2)
+        {
+            Debug.LogWarning("Cannot delete knot: Minimum 2 knots required");
+            return;
+        }
+        
+        var deletedKnot = splineContainer.Spline[index];
+        splineContainer.Spline.RemoveAt(index);
+        RecordAction(new DeleteKnotAction(index, deletedKnot));
+        Debug.Log($"Knot {index} deleted");
+        
+        // Refresh placed objects to update the path
+        if (placedObjects.Count > 0)
+        {
+            PlaceObject(Vector3.zero);
         }
     }
 } 

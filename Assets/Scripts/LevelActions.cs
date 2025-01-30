@@ -112,4 +112,56 @@ public class PlaceAllObjectsAction : LevelAction
             objects.Add(newObj);
         }
     }
+}
+
+public class DeleteObjectAction : LevelAction
+{
+    private GameObject deletedObject;
+    private Vector3 position;
+    private Quaternion rotation;
+
+    public DeleteObjectAction(GameObject obj)
+    {
+        this.deletedObject = obj;
+        this.position = obj.transform.position;
+        this.rotation = obj.transform.rotation;
+    }
+
+    public override void Undo(SplineContainer spline, List<GameObject> objects)
+    {
+        GameObject newObj = Object.Instantiate(deletedObject, position, rotation);
+        objects.Add(newObj);
+    }
+
+    public override void Redo(SplineContainer spline, List<GameObject> objects)
+    {
+        if (objects.Count > 0)
+        {
+            GameObject obj = objects[objects.Count - 1];
+            objects.RemoveAt(objects.Count - 1);
+            Object.Destroy(obj);
+        }
+    }
+}
+
+public class DeleteKnotAction : LevelAction
+{
+    private int index;
+    private BezierKnot knot;
+
+    public DeleteKnotAction(int index, BezierKnot knot)
+    {
+        this.index = index;
+        this.knot = knot;
+    }
+
+    public override void Undo(SplineContainer spline, List<GameObject> objects)
+    {
+        spline.Spline.Insert(index, knot);
+    }
+
+    public override void Redo(SplineContainer spline, List<GameObject> objects)
+    {
+        spline.Spline.RemoveAt(index);
+    }
 } 
