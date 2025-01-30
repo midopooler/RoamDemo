@@ -11,8 +11,8 @@ public class LevelDesigner : MonoBehaviour
     public SplineContainer splineContainer;
     [Min(1f)]
     public float minimumKnotDistance = 1f;
-    [Range(2, 10)]
-    public int maximumKnots = 10;
+    [Range(2, 25)]
+    public int maximumKnots = 25;
 
     [Header("Prefabs")]
     public GameObject cuboidPrefab;
@@ -170,11 +170,11 @@ public class LevelDesigner : MonoBehaviour
     }
     public void PlaceCuboidPrefab()
     {
-         Instantiate(cuboidPrefab, new Vector3(-10F,0,0) , Quaternion.identity);
+         Instantiate(cuboidPrefab, new Vector3(0,0,-10F) , Quaternion.identity);
     }
     public void PlaceCylinderPrefab()
     {
-         Instantiate(cylinderPrefab, new Vector3(-10F,0,0) , Quaternion.identity);
+         Instantiate(cylinderPrefab, new Vector3(0,0,-10F) , Quaternion.identity);
     }
 
     private void PlaceObject(Vector3 position)
@@ -225,7 +225,11 @@ public class LevelDesigner : MonoBehaviour
             Vector3 directionVector = new Vector3(direction.x, 0, direction.z).normalized;
             if (directionVector != Vector3.zero)
             {
-                obj.transform.rotation = Quaternion.LookRotation(directionVector);
+                // Add 90 degrees to Y rotation
+                Quaternion rotation = Quaternion.LookRotation(directionVector);
+                Vector3 eulerAngles = rotation.eulerAngles;
+                eulerAngles.y += 90f;
+                obj.transform.rotation = Quaternion.Euler(eulerAngles);
             }
 
             placedObjects.Add(obj);

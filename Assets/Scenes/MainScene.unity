@@ -1059,7 +1059,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: -53.8, y: 193.3, z: 0}
+  m_LocalPosition: {x: -84.84, y: 193.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1523,7 +1523,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &415103404
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1539,9 +1539,9 @@ RectTransform:
   - {fileID: 1922583026}
   m_Father: {fileID: 1530730435}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 62.9202, y: -180}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &415103405
@@ -2378,34 +2378,34 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -3
+        z: -1.5
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 1.5
       Rotation:
         value:
-          x: 6.340189e-23
-          y: 0.70710677
-          z: 6.340189e-23
+          x: 6.340188e-23
+          y: -0.70710677
+          z: -6.340188e-23
           w: 0.70710677
     - Position:
-        x: 30
+        x: -15
         y: 0
         z: 0
       TangentIn:
         x: -0
         y: -0
-        z: -3
+        z: -1.5
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 1.5
       Rotation:
         value:
           x: 6.340188e-23
-          y: 0.70710677
-          z: 6.340188e-23
+          y: -0.70710677
+          z: -6.340188e-23
           w: 0.70710677
     m_MetaData:
     - Mode: 0
@@ -3324,11 +3324,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splineContainer: {fileID: 685751137}
   minimumKnotDistance: 1
-  maximumKnots: 10
+  maximumKnots: 25
   cuboidPrefab: {fileID: 386876585704769872, guid: 407211e83bc194f0aaee0c2b32f4d03c, type: 3}
   cylinderPrefab: {fileID: 587899898135877451, guid: aff71093cb4464d01aedb8deea14446d, type: 3}
   buttonSize: 60
-  spacing: 15
+  spacing: 10
 --- !u!4 &1000014990
 Transform:
   m_ObjectHideFlags: 0
@@ -5346,7 +5346,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Delete Knot
+  m_Text: Delete
 --- !u!222 &1922583028
 CanvasRenderer:
   m_ObjectHideFlags: 0
