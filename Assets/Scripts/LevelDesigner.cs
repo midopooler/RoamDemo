@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-//using Unity.Splines;
 
 public class LevelDesigner : MonoBehaviour
 {
@@ -168,6 +167,14 @@ public class LevelDesigner : MonoBehaviour
     private void FinishMovingKnot()
     {
         RecordAction(new MoveKnotAction(selectedKnotIndex, splineContainer.Spline[selectedKnotIndex]));
+    }
+    public void PlaceCuboidPrefab()
+    {
+         Instantiate(cuboidPrefab, new Vector3(-10F,0,0) , Quaternion.identity);
+    }
+    public void PlaceCylinderPrefab()
+    {
+         Instantiate(cylinderPrefab, new Vector3(-10F,0,0) , Quaternion.identity);
     }
 
     private void PlaceObject(Vector3 position)
